@@ -30,7 +30,7 @@ export default class SceneB extends Phaser.Scene {
     preload() {}
 
     create() {
-        this.add.image(400, 300, "space").setScale(2);
+        this.add.image(400, 300, "evil").setScale(2);
 
         this.platforms = this.physics.add.staticGroup();
         const ground = this.platforms.create(
