@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 
-export default class MainScene extends Phaser.Scene {
+export default class SceneD extends Phaser.Scene {
     private platforms?: Phaser.Physics.Arcade.StaticGroup;
 
-    private player: Phaser.Physics.Arcade.Sprite;
+    private player?: Phaser.Physics.Arcade.Sprite;
 
     private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
 
@@ -22,7 +22,7 @@ export default class MainScene extends Phaser.Scene {
     private roundText: Phaser.GameObjects.Text;
 
     constructor() {
-        super({ key: "MainScene" });
+        super({ key: "sceneD" });
     }
 
     init() {}
@@ -30,7 +30,7 @@ export default class MainScene extends Phaser.Scene {
     preload() {}
 
     create() {
-        this.add.image(400, 300, "sky");
+        this.add.image(400, 300, "matrix");
 
         this.platforms = this.physics.add.staticGroup();
         const ground = this.platforms.create(
@@ -45,7 +45,13 @@ export default class MainScene extends Phaser.Scene {
         this.platforms.create(50, 250, "platform");
         this.platforms.create(750, 220, "platform");
 
-        this.player = this.physics.add.sprite(100, 450, "dude");
+        const playerLocation = this.registry.get("playerLocation");
+
+        this.player = this.physics.add.sprite(
+            playerLocation.x,
+            playerLocation.y,
+            "dude"
+        );
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
 
@@ -103,12 +109,12 @@ export default class MainScene extends Phaser.Scene {
 
         this.scoreText = this.add.text(16, 16, "Score: 0", {
             fontSize: "32px",
-            color: "#000",
+            color: "#999",
         });
 
         this.roundText = this.add.text(630, 16, "Round: 1", {
             fontSize: "32px",
-            color: "#000",
+            color: "#999",
         });
 
         this.bombs = this.physics.add.group();
@@ -125,8 +131,8 @@ export default class MainScene extends Phaser.Scene {
 
     private handleHitBomb() {
         this.physics.pause();
-        this.player.setTint(0xff0000);
-        this.player.anims.play("turn");
+        this.player?.setTint(0xff0000);
+        this.player?.anims.play("turn");
 
         this.gameOver = true;
     }
@@ -145,18 +151,18 @@ export default class MainScene extends Phaser.Scene {
 
         if (this.stars.countActive(true) === 0) {
             this.registry.set("playerLocation", {
-                x: this.player.x,
-                y: this.player.y,
+                x: this.player?.x,
+                y: this.player?.y,
             });
-
-            this.scene.start("sceneB");
-
             this.stars.children.iterate((c) => {
                 const child = c as Phaser.Physics.Arcade.Image;
                 child.enableBody(true, child.x, 0, true, true);
                 return true;
             });
 
+            if (!this.player) {
+                return;
+            }
             const x =
                 this.player.x < 400
                     ? Phaser.Math.Between(400, 800)
@@ -182,17 +188,17 @@ export default class MainScene extends Phaser.Scene {
         }
 
         if (this.cursors.left.isDown) {
-            this.player.setVelocityX(-160);
-            this.player.anims.play("left", true);
+            this.player?.setVelocityX(-160);
+            this.player?.anims.play("left", true);
         } else if (this.cursors.right.isDown) {
-            this.player.setVelocityX(160);
-            this.player.anims.play("right", true);
+            this.player?.setVelocityX(160);
+            this.player?.anims.play("right", true);
         } else {
-            this.player.setVelocityX(0);
-            this.player.anims.play("turn");
+            this.player?.setVelocityX(0);
+            this.player?.anims.play("turn");
         }
 
-        if (this.cursors.up.isDown && this.player.body?.touching.down) {
+        if (this.cursors.up.isDown && this.player?.body?.touching.down) {
             const x =
                 this.player.x < 400
                     ? Phaser.Math.Between(400, 800)
@@ -203,7 +209,7 @@ export default class MainScene extends Phaser.Scene {
                 16,
                 "bomb"
             );
-            bomb.setBounce(0.8);
+            bomb.setBounce(1.7);
             bomb.setCollideWorldBounds(true);
             bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
             this.player.setVelocityY(-330);

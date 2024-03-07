@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-export default class MainScene extends Phaser.Scene {
+export default class SceneB extends Phaser.Scene {
     private platforms?: Phaser.Physics.Arcade.StaticGroup;
 
     private player: Phaser.Physics.Arcade.Sprite;
@@ -22,7 +22,7 @@ export default class MainScene extends Phaser.Scene {
     private roundText: Phaser.GameObjects.Text;
 
     constructor() {
-        super({ key: "MainScene" });
+        super({ key: "sceneB" });
     }
 
     init() {}
@@ -30,7 +30,7 @@ export default class MainScene extends Phaser.Scene {
     preload() {}
 
     create() {
-        this.add.image(400, 300, "sky");
+        this.add.image(400, 300, "evil").setScale(2);
 
         this.platforms = this.physics.add.staticGroup();
         const ground = this.platforms.create(
@@ -45,7 +45,13 @@ export default class MainScene extends Phaser.Scene {
         this.platforms.create(50, 250, "platform");
         this.platforms.create(750, 220, "platform");
 
-        this.player = this.physics.add.sprite(100, 450, "dude");
+        const playerLocation = this.registry.get("playerLocation");
+
+        this.player = this.physics.add.sprite(
+            playerLocation.x,
+            playerLocation.y,
+            "dude"
+        );
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
 
@@ -148,28 +154,13 @@ export default class MainScene extends Phaser.Scene {
                 x: this.player.x,
                 y: this.player.y,
             });
-
-            this.scene.start("sceneB");
+            this.scene.start("sceneC");
 
             this.stars.children.iterate((c) => {
                 const child = c as Phaser.Physics.Arcade.Image;
                 child.enableBody(true, child.x, 0, true, true);
                 return true;
             });
-
-            const x =
-                this.player.x < 400
-                    ? Phaser.Math.Between(400, 800)
-                    : Phaser.Math.Between(0, 400);
-
-            const bomb: Phaser.Physics.Arcade.Image = this.bombs.create(
-                x,
-                16,
-                "bomb"
-            );
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
 
             this.round += 1;
             this.roundText.setText(`Round: ${this.round}`);
@@ -203,7 +194,7 @@ export default class MainScene extends Phaser.Scene {
                 16,
                 "bomb"
             );
-            bomb.setBounce(0.8);
+            bomb.setBounce(1);
             bomb.setCollideWorldBounds(true);
             bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
             this.player.setVelocityY(-330);
