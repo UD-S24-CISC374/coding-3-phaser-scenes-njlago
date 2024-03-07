@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export default class SceneB extends Phaser.Scene {
     private platforms?: Phaser.Physics.Arcade.StaticGroup;
 
@@ -129,8 +131,8 @@ export default class SceneB extends Phaser.Scene {
 
     private handleHitBomb() {
         this.physics.pause();
-        this.player?.setTint(0xff0000);
-        this.player?.anims.play("turn");
+        this.player.setTint(0xff0000);
+        this.player.anims.play("turn");
 
         this.gameOver = true;
     }
@@ -149,8 +151,8 @@ export default class SceneB extends Phaser.Scene {
 
         if (this.stars.countActive(true) === 0) {
             this.registry.set("playerLocation", {
-                x: this.player?.x,
-                y: this.player?.y,
+                x: this.player.x,
+                y: this.player.y,
             });
             this.scene.start("sceneC");
 
@@ -159,10 +161,6 @@ export default class SceneB extends Phaser.Scene {
                 child.enableBody(true, child.x, 0, true, true);
                 return true;
             });
-
-            if (!this.player) {
-                return;
-            }
 
             this.round += 1;
             this.roundText.setText(`Round: ${this.round}`);
@@ -175,17 +173,17 @@ export default class SceneB extends Phaser.Scene {
         }
 
         if (this.cursors.left.isDown) {
-            this.player?.setVelocityX(-160);
-            this.player?.anims.play("left", true);
+            this.player.setVelocityX(-160);
+            this.player.anims.play("left", true);
         } else if (this.cursors.right.isDown) {
-            this.player?.setVelocityX(160);
-            this.player?.anims.play("right", true);
+            this.player.setVelocityX(160);
+            this.player.anims.play("right", true);
         } else {
-            this.player?.setVelocityX(0);
-            this.player?.anims.play("turn");
+            this.player.setVelocityX(0);
+            this.player.anims.play("turn");
         }
 
-        if (this.cursors.up.isDown && this.player?.body?.touching.down) {
+        if (this.cursors.up.isDown && this.player.body?.touching.down) {
             const x =
                 this.player.x < 400
                     ? Phaser.Math.Between(400, 800)

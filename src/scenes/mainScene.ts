@@ -125,8 +125,8 @@ export default class MainScene extends Phaser.Scene {
 
     private handleHitBomb() {
         this.physics.pause();
-        this.player?.setTint(0xff0000);
-        this.player?.anims.play("turn");
+        this.player.setTint(0xff0000);
+        this.player.anims.play("turn");
 
         this.gameOver = true;
     }
@@ -145,8 +145,8 @@ export default class MainScene extends Phaser.Scene {
 
         if (this.stars.countActive(true) === 0) {
             this.registry.set("playerLocation", {
-                x: this.player?.x,
-                y: this.player?.y,
+                x: this.player.x,
+                y: this.player.y,
             });
 
             this.scene.start("sceneB");
@@ -157,9 +157,6 @@ export default class MainScene extends Phaser.Scene {
                 return true;
             });
 
-            if (!this.player) {
-                return;
-            }
             const x =
                 this.player.x < 400
                     ? Phaser.Math.Between(400, 800)
@@ -185,17 +182,17 @@ export default class MainScene extends Phaser.Scene {
         }
 
         if (this.cursors.left.isDown) {
-            this.player?.setVelocityX(-160);
-            this.player?.anims.play("left", true);
+            this.player.setVelocityX(-160);
+            this.player.anims.play("left", true);
         } else if (this.cursors.right.isDown) {
-            this.player?.setVelocityX(160);
-            this.player?.anims.play("right", true);
+            this.player.setVelocityX(160);
+            this.player.anims.play("right", true);
         } else {
-            this.player?.setVelocityX(0);
-            this.player?.anims.play("turn");
+            this.player.setVelocityX(0);
+            this.player.anims.play("turn");
         }
 
-        if (this.cursors.up.isDown && this.player?.body?.touching.down) {
+        if (this.cursors.up.isDown && this.player.body?.touching.down) {
             const x =
                 this.player.x < 400
                     ? Phaser.Math.Between(400, 800)
